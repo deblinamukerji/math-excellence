@@ -1,0 +1,1500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Academic Excellence Tutoring</title>
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;600;700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/react@18/umd/react.production.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+    <style>
+        :root {
+            --primary: #1a4d2e;
+            --secondary: #d4a574;
+            --accent: #c85c2e;
+            --bg-light: #faf8f3;
+            --bg-white: #ffffff;
+            --text-dark: #2d2d2d;
+            --text-muted: #666666;
+            --border: #e8e4dc;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            color: var(--text-dark);
+            background: var(--bg-light);
+            line-height: 1.6;
+        }
+
+        .app {
+            min-height: 100vh;
+        }
+
+        /* Navigation */
+        nav {
+            background: var(--bg-white);
+            border-bottom: 2px solid var(--primary);
+            padding: 1.5rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        nav .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        nav .logo {
+            font-family: 'Crimson Pro', serif;
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--primary);
+            letter-spacing: -0.5px;
+        }
+
+        nav .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        nav button, nav a {
+            background: none;
+            border: none;
+            color: var(--text-dark);
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            padding: 0.5rem 1rem;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            position: relative;
+        }
+
+        nav button:hover, nav a:hover {
+            color: var(--primary);
+        }
+
+        nav button::after, nav a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%) scaleX(0);
+            width: 80%;
+            height: 2px;
+            background: var(--accent);
+            transition: transform 0.3s ease;
+        }
+
+        nav button:hover::after, nav a:hover::after {
+            transform: translateX(-50%) scaleX(1);
+        }
+
+        nav .btn-primary {
+            background: var(--primary);
+            color: white;
+            border-radius: 6px;
+            padding: 0.6rem 1.5rem;
+        }
+
+        nav .btn-primary:hover {
+            background: #2a5d3e;
+            color: white;
+        }
+
+        nav .btn-primary::after {
+            display: none;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, var(--primary) 0%, #2a5d3e 100%);
+            color: white;
+            padding: 6rem 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(212, 165, 116, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(200, 92, 46, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .hero-content {
+            max-width: 900px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero h1 {
+            font-family: 'Crimson Pro', serif;
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+            animation: fadeInUp 0.8s ease;
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            margin-bottom: 2rem;
+            opacity: 0.95;
+            animation: fadeInUp 0.8s ease 0.2s backwards;
+        }
+
+        .hero-cta {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            animation: fadeInUp 0.8s ease 0.4s backwards;
+        }
+
+        .hero-cta button {
+            padding: 1rem 2.5rem;
+            font-size: 1.1rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .hero-cta .btn-light {
+            background: white;
+            color: var(--primary);
+        }
+
+        .hero-cta .btn-light:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        }
+
+        .hero-cta .btn-outline {
+            background: transparent;
+            color: white;
+            border: 2px solid white;
+        }
+
+        .hero-cta .btn-outline:hover {
+            background: white;
+            color: var(--primary);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Main Content */
+        .main-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .page-header h2 {
+            font-family: 'Crimson Pro', serif;
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .page-header p {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        /* Features Grid */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .feature-card {
+            background: var(--bg-white);
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            border-color: var(--secondary);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .feature-card h3 {
+            font-family: 'Crimson Pro', serif;
+            font-size: 1.5rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .feature-card p {
+            color: var(--text-muted);
+            line-height: 1.7;
+        }
+
+        /* Login/Signup Form */
+        .auth-container {
+            max-width: 500px;
+            margin: 4rem auto;
+            background: var(--bg-white);
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            padding: 3rem;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+        }
+
+        .auth-container h2 {
+            font-family: 'Crimson Pro', serif;
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text-dark);
+        }
+
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 0.9rem;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: 'DM Sans', sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(26, 77, 46, 0.1);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 1rem;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .submit-btn:hover {
+            background: #2a5d3e;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(26, 77, 46, 0.3);
+        }
+
+        .submit-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .auth-toggle {
+            text-align: center;
+            margin-top: 1.5rem;
+            color: var(--text-muted);
+        }
+
+        .auth-toggle button {
+            background: none;
+            border: none;
+            color: var(--accent);
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+
+        /* Dashboard */
+        .dashboard {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            gap: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .sidebar {
+            background: var(--bg-white);
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            height: fit-content;
+            position: sticky;
+            top: 100px;
+        }
+
+        .sidebar h3 {
+            font-family: 'Crimson Pro', serif;
+            color: var(--primary);
+            margin-bottom: 1rem;
+            font-size: 1.25rem;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+        }
+
+        .sidebar-menu li {
+            margin-bottom: 0.5rem;
+        }
+
+        .sidebar-menu button {
+            width: 100%;
+            text-align: left;
+            padding: 0.75rem;
+            background: none;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            font-family: 'DM Sans', sans-serif;
+        }
+
+        .sidebar-menu button:hover {
+            background: var(--bg-light);
+            color: var(--primary);
+        }
+
+        .sidebar-menu button.active {
+            background: var(--primary);
+            color: white;
+            font-weight: 600;
+        }
+
+        .dashboard-content {
+            background: var(--bg-white);
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            padding: 2.5rem;
+            min-height: 600px;
+        }
+
+        .dashboard-content h2 {
+            font-family: 'Crimson Pro', serif;
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 2rem;
+        }
+
+        /* Worksheet Form */
+        .worksheet-form {
+            max-width: 700px;
+        }
+
+        .worksheet-answers {
+            margin-top: 2rem;
+        }
+
+        .answer-item {
+            margin-bottom: 1.5rem;
+            padding: 1.5rem;
+            background: var(--bg-light);
+            border-radius: 8px;
+        }
+
+        .answer-item label {
+            display: block;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 0.75rem;
+        }
+
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            border: 1px solid #c3e6cb;
+        }
+
+        /* About/Learn More/Contact Pages */
+        .content-section {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .content-section h3 {
+            font-family: 'Crimson Pro', serif;
+            font-size: 1.75rem;
+            color: var(--primary);
+            margin: 2rem 0 1rem;
+        }
+
+        .content-section p {
+            margin-bottom: 1.5rem;
+            color: var(--text-muted);
+            line-height: 1.8;
+            font-size: 1.05rem;
+        }
+
+        .content-section ul {
+            margin-bottom: 1.5rem;
+            padding-left: 2rem;
+        }
+
+        .content-section li {
+            margin-bottom: 0.75rem;
+            color: var(--text-muted);
+            line-height: 1.8;
+        }
+
+        /* Payment Section */
+        .payment-disabled {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-align: center;
+            color: #856404;
+        }
+
+        .payment-container {
+            max-width: 600px;
+            margin: 2rem auto;
+        }
+
+        .price-display {
+            background: var(--bg-light);
+            border: 2px solid var(--secondary);
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .price-display h3 {
+            font-family: 'Crimson Pro', serif;
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .price-display p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--primary);
+            color: white;
+            padding: 3rem 2rem 1.5rem;
+            margin-top: 4rem;
+        }
+
+        footer .footer-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        footer p {
+            opacity: 0.9;
+            margin-bottom: 1rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                position: static;
+            }
+
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+
+            nav .nav-links {
+                gap: 1rem;
+            }
+
+            nav button, nav a {
+                padding: 0.5rem;
+                font-size: 0.85rem;
+            }
+        }
+
+        .file-upload-area {
+            border: 2px dashed var(--border);
+            border-radius: 8px;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: var(--bg-light);
+        }
+
+        .file-upload-area:hover {
+            border-color: var(--primary);
+            background: white;
+        }
+
+        .file-upload-area.drag-over {
+            border-color: var(--accent);
+            background: #fff9f0;
+        }
+
+        .uploaded-file {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem;
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            margin-top: 1rem;
+        }
+
+        .uploaded-file button {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        // Configuration - Set ENABLE_PAYMENT to true when ready to accept payments
+        const ENABLE_PAYMENT = false;
+        const MONTHLY_PRICE = 10;
+        const TUTOR_EMAIL = "deblinamukerji@gmail.com"; // Replace with your email
+
+        function App() {
+            const [currentPage, setCurrentPage] = useState('home');
+            const [isLoggedIn, setIsLoggedIn] = useState(false);
+            const [currentUser, setCurrentUser] = useState(null);
+            const [showAuth, setShowAuth] = useState(false);
+            const [authMode, setAuthMode] = useState('login');
+            const [dashboardView, setDashboardView] = useState('worksheets');
+
+            // Check if user is logged in on mount
+            useEffect(() => {
+                const user = localStorage.getItem('currentUser');
+                if (user) {
+                    setCurrentUser(JSON.parse(user));
+                    setIsLoggedIn(true);
+                }
+            }, []);
+
+            const handleLogout = () => {
+                localStorage.removeItem('currentUser');
+                setIsLoggedIn(false);
+                setCurrentUser(null);
+                setCurrentPage('home');
+            };
+
+            return (
+                <div className="app">
+                    <Navigation 
+                        currentPage={currentPage}
+                        setCurrentPage={setCurrentPage}
+                        isLoggedIn={isLoggedIn}
+                        setShowAuth={setShowAuth}
+                        handleLogout={handleLogout}
+                    />
+                    
+                    {showAuth && !isLoggedIn ? (
+                        <AuthSection 
+                            authMode={authMode}
+                            setAuthMode={setAuthMode}
+                            setShowAuth={setShowAuth}
+                            setIsLoggedIn={setIsLoggedIn}
+                            setCurrentUser={setCurrentUser}
+                            setCurrentPage={setCurrentPage}
+                        />
+                    ) : isLoggedIn ? (
+                        <Dashboard 
+                            currentUser={currentUser}
+                            dashboardView={dashboardView}
+                            setDashboardView={setDashboardView}
+                        />
+                    ) : currentPage === 'home' ? (
+                        <HomePage setShowAuth={setShowAuth} setCurrentPage={setCurrentPage} />
+                    ) : currentPage === 'about' ? (
+                        <AboutPage />
+                    ) : currentPage === 'learn' ? (
+                        <LearnMorePage />
+                    ) : currentPage === 'contact' ? (
+                        <ContactPage />
+                    ) : null}
+
+                    <Footer />
+                </div>
+            );
+        }
+
+        function Navigation({ currentPage, setCurrentPage, isLoggedIn, setShowAuth, handleLogout }) {
+            return (
+                <nav>
+                    <div className="nav-container">
+                        <div className="logo">Academic Excellence</div>
+                        <div className="nav-links">
+                            {!isLoggedIn && (
+                                <>
+                                    <button onClick={() => setCurrentPage('home')}>Home</button>
+                                    <button onClick={() => setCurrentPage('about')}>About Me</button>
+                                    <button onClick={() => setCurrentPage('learn')}>Learn More</button>
+                                    <button onClick={() => setCurrentPage('contact')}>Contact</button>
+                                    <button className="btn-primary" onClick={() => setShowAuth(true)}>
+                                        Student Login
+                                    </button>
+                                </>
+                            )}
+                            {isLoggedIn && (
+                                <button className="btn-primary" onClick={handleLogout}>
+                                    Logout
+                                </button>
+                            )}
+                        </div>
+                    </div>
+                </nav>
+            );
+        }
+
+        function HomePage({ setShowAuth, setCurrentPage }) {
+            return (
+                <>
+                    <section className="hero">
+                        <div className="hero-content">
+                            <h1>Excel in Your Studies</h1>
+                            <p>Personalized math tutoring for students in Grades 3 through 12 . Master math with expert guidance tailored to your learning style.</p>
+                            <div className="hero-cta">
+                                <button className="btn-light" onClick={() => setShowAuth(true)}>
+                                    Get Started Free
+                                </button>
+                                <button className="btn-outline" onClick={() => setCurrentPage('learn')}>
+                                    Learn More
+                                </button>
+                            </div>
+                        </div>
+                    </section>
+
+                    <div className="main-content">
+                        <div className="page-header">
+                            <h2>Why Choose Our Tutoring?</h2>
+                            <p>It has been my privilege to have tutored students using Common Core Curriculum since 2010</p>
+                        </div>
+
+                        <div className="features-grid">
+                            <div className="feature-card">
+                                <div className="feature-icon">📚</div>
+                                <h3>Grade 5-10 Coverage</h3>
+                                <p></p>
+                            </div>
+                            <div className="feature-card">
+                                <div className="feature-icon">✍️</div>
+                                <h3>Interactive Worksheets</h3>
+                                <p>Submit worksheets online and receive detailed feedback to improve understanding and performance.</p>
+                            </div>
+                            <div className="feature-card">
+                                <div className="feature-icon">🎯</div>
+                                <h3>Personalized Learning</h3>
+                                <p>Tailored approach that adapts to each student's unique learning style and pace.</p>
+                            </div>
+                            <div className="feature-card">
+                                <div className="feature-icon">💰</div>
+                                <h3>Currently Free</h3>
+                                <p>Access all features completely free during the launch period. Full value at no cost!</p>
+                            </div>
+                            <div className="feature-card">
+                                <div className="feature-icon">⏰</div>
+                                <h3>Flexible Schedule</h3>
+                                <p>Learn at your own pace with 24/7 access to materials and resources.</p>
+                            </div>
+                            <div className="feature-card">
+                                <div className="feature-icon">📊</div>
+                                <h3>Track Progress</h3>
+                                <p>Monitor improvement with detailed tracking of submitted work and feedback.</p>
+                            </div>
+                        </div>
+                    </div>
+                </>
+            );
+        }
+
+        function AuthSection({ authMode, setAuthMode, setShowAuth, setIsLoggedIn, setCurrentUser, setCurrentPage }) {
+            const [formData, setFormData] = useState({
+                name: '',
+                email: '',
+                password: '',
+                grade: '5',
+                parentEmail: ''
+            });
+
+            const handleSubmit = (e) => {
+                e.preventDefault();
+                
+                if (authMode === 'signup') {
+                    // Store user data
+                    const userData = {
+                        name: formData.name,
+                        email: formData.email,
+                        grade: formData.grade,
+                        parentEmail: formData.parentEmail,
+                        registeredAt: new Date().toISOString()
+                    };
+                    
+                    // In production, this would go to a backend
+                    localStorage.setItem('currentUser', JSON.stringify(userData));
+                    setCurrentUser(userData);
+                    setIsLoggedIn(true);
+                    setShowAuth(false);
+                } else {
+                    // Login - in production, verify credentials
+                    const mockUser = {
+                        name: formData.email.split('@')[0],
+                        email: formData.email,
+                        grade: '8'
+                    };
+                    localStorage.setItem('currentUser', JSON.stringify(mockUser));
+                    setCurrentUser(mockUser);
+                    setIsLoggedIn(true);
+                    setShowAuth(false);
+                }
+            };
+
+            return (
+                <div className="auth-container">
+                    <h2>{authMode === 'login' ? 'Student Login' : 'Create Account'}</h2>
+                    <form onSubmit={handleSubmit}>
+                        {authMode === 'signup' && (
+                            <div className="form-group">
+                                <label>Full Name</label>
+                                <input 
+                                    type="text" 
+                                    required
+                                    value={formData.name}
+                                    onChange={(e) => setFormData({...formData, name: e.target.value})}
+                                />
+                            </div>
+                        )}
+                        
+                        <div className="form-group">
+                            <label>Email</label>
+                            <input 
+                                type="email" 
+                                required
+                                value={formData.email}
+                                onChange={(e) => setFormData({...formData, email: e.target.value})}
+                            />
+                        </div>
+
+                        <div className="form-group">
+                            <label>Password</label>
+                            <input 
+                                type="password" 
+                                required
+                                value={formData.password}
+                                onChange={(e) => setFormData({...formData, password: e.target.value})}
+                            />
+                        </div>
+
+                        {authMode === 'signup' && (
+                            <>
+                                <div className="form-group">
+                                    <label>Grade Level</label>
+                                    <select 
+                                        value={formData.grade}
+                                        onChange={(e) => setFormData({...formData, grade: e.target.value})}
+                                    >
+                                        {[5,6,7,8,9,10].map(grade => (
+                                            <option key={grade} value={grade}>Grade {grade}</option>
+                                        ))}
+                                    </select>
+                                </div>
+
+                                <div className="form-group">
+                                    <label>Parent/Guardian Email</label>
+                                    <input 
+                                        type="email" 
+                                        required
+                                        value={formData.parentEmail}
+                                        onChange={(e) => setFormData({...formData, parentEmail: e.target.value})}
+                                    />
+                                </div>
+                            </>
+                        )}
+
+                        <button type="submit" className="submit-btn">
+                            {authMode === 'login' ? 'Login' : 'Sign Up'}
+                        </button>
+                    </form>
+
+                    <div className="auth-toggle">
+                        {authMode === 'login' ? (
+                            <p>
+                                Don't have an account? 
+                                <button onClick={() => setAuthMode('signup')}> Sign up</button>
+                            </p>
+                        ) : (
+                            <p>
+                                Already have an account? 
+                                <button onClick={() => setAuthMode('login')}> Login</button>
+                            </p>
+                        )}
+                    </div>
+                </div>
+            );
+        }
+
+        function Dashboard({ currentUser, dashboardView, setDashboardView }) {
+            return (
+                <div className="dashboard">
+                    <aside className="sidebar">
+                        <h3>Dashboard</h3>
+                        <ul className="sidebar-menu">
+                            <li>
+                                <button 
+                                    className={dashboardView === 'worksheets' ? 'active' : ''}
+                                    onClick={() => setDashboardView('worksheets')}
+                                >
+                                    Submit Worksheet
+                                </button>
+                            </li>
+                            <li>
+                                <button 
+                                    className={dashboardView === 'history' ? 'active' : ''}
+                                    onClick={() => setDashboardView('history')}
+                                >
+                                    Submission History
+                                </button>
+                            </li>
+                            <li>
+                                <button 
+                                    className={dashboardView === 'payment' ? 'active' : ''}
+                                    onClick={() => setDashboardView('payment')}
+                                >
+                                    Subscription
+                                </button>
+                            </li>
+                        </ul>
+                    </aside>
+
+                    <main className="dashboard-content">
+                        {dashboardView === 'worksheets' && (
+                            <WorksheetSubmission currentUser={currentUser} />
+                        )}
+                        {dashboardView === 'history' && (
+                            <SubmissionHistory currentUser={currentUser} />
+                        )}
+                        {dashboardView === 'payment' && (
+                            <PaymentSection currentUser={currentUser} />
+                        )}
+                    </main>
+                </div>
+            );
+        }
+
+        function WorksheetSubmission({ currentUser }) {
+            const [formData, setFormData] = useState({
+                subject: 'Math',
+                topic: '',
+                answers: ['', '', '', '', ''],
+                notes: '',
+                attachments: []
+            });
+            const [submitted, setSubmitted] = useState(false);
+
+            const handleSubmit = async (e) => {
+                e.preventDefault();
+                
+                // Generate PDF
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF();
+                
+                // Add content to PDF
+                doc.setFontSize(20);
+                doc.text('Worksheet Submission', 20, 20);
+                
+                doc.setFontSize(12);
+                doc.text(`Student: ${currentUser.name}`, 20, 35);
+                doc.text(`Email: ${currentUser.email}`, 20, 42);
+                doc.text(`Grade: ${currentUser.grade}`, 20, 49);
+                doc.text(`Subject: ${formData.subject}`, 20, 56);
+                doc.text(`Topic: ${formData.topic}`, 20, 63);
+                doc.text(`Date: ${new Date().toLocaleDateString()}`, 20, 70);
+                
+                doc.setFontSize(14);
+                doc.text('Answers:', 20, 85);
+                
+                doc.setFontSize(11);
+                let yPos = 95;
+                formData.answers.forEach((answer, index) => {
+                    if (answer.trim()) {
+                        doc.text(`Question ${index + 1}:`, 20, yPos);
+                        const lines = doc.splitTextToSize(answer, 170);
+                        doc.text(lines, 20, yPos + 7);
+                        yPos += 7 * lines.length + 10;
+                    }
+                });
+                
+                if (formData.notes) {
+                    doc.text('Additional Notes:', 20, yPos);
+                    const notesLines = doc.splitTextToSize(formData.notes, 170);
+                    doc.text(notesLines, 20, yPos + 7);
+                }
+                
+                // Save PDF
+                const pdfBlob = doc.output('blob');
+                const pdfUrl = URL.createObjectURL(pdfBlob);
+                
+                // In production, this would send to your email
+                console.log('Worksheet submitted:', {
+                    student: currentUser,
+                    worksheet: formData,
+                    pdfBlob: pdfBlob
+                });
+                
+                // Save to submission history
+                const submissions = JSON.parse(localStorage.getItem('submissions') || '[]');
+                submissions.push({
+                    ...formData,
+                    studentName: currentUser.name,
+                    studentEmail: currentUser.email,
+                    submittedAt: new Date().toISOString(),
+                    pdfUrl: pdfUrl
+                });
+                localStorage.setItem('submissions', JSON.stringify(submissions));
+                
+                // Show download link for tutor
+                const link = document.createElement('a');
+                link.href = pdfUrl;
+                link.download = `worksheet-${currentUser.name}-${Date.now()}.pdf`;
+                link.click();
+                
+                setSubmitted(true);
+                setTimeout(() => {
+                    setSubmitted(false);
+                    setFormData({
+                        subject: 'Math',
+                        topic: '',
+                        answers: ['', '', '', '', ''],
+                        notes: '',
+                        attachments: []
+                    });
+                }, 3000);
+            };
+
+            const handleFileUpload = (e) => {
+                const files = Array.from(e.target.files);
+                setFormData({...formData, attachments: [...formData.attachments, ...files]});
+            };
+
+            const removeFile = (index) => {
+                const newAttachments = formData.attachments.filter((_, i) => i !== index);
+                setFormData({...formData, attachments: newAttachments});
+            };
+
+            return (
+                <div>
+                    <h2>Submit Worksheet</h2>
+                    
+                    {submitted && (
+                        <div className="success-message">
+                            ✓ Worksheet submitted successfully! Your tutor will review it and provide feedback via email. A PDF has been downloaded for your records.
+                        </div>
+                    )}
+
+                    <form onSubmit={handleSubmit} className="worksheet-form">
+                        <div className="form-group">
+                            <label>Subject</label>
+                            <select 
+                                value={formData.subject}
+                                onChange={(e) => setFormData({...formData, subject: e.target.value})}
+                            >
+                                <option>Math</option>
+                                <option>Science</option>
+                                <option>English</option>
+                                <option>Social Studies</option>
+                                <option>Other</option>
+                            </select>
+                        </div>
+
+                        <div className="form-group">
+                            <label>Topic/Assignment Name</label>
+                            <input 
+                                type="text"
+                                required
+                                value={formData.topic}
+                                onChange={(e) => setFormData({...formData, topic: e.target.value})}
+                                placeholder="e.g., Algebra - Solving Linear Equations"
+                            />
+                        </div>
+
+                        <div className="worksheet-answers">
+                            <h3>Your Answers</h3>
+                            {formData.answers.map((answer, index) => (
+                                <div key={index} className="answer-item">
+                                    <label>Question {index + 1}</label>
+                                    <textarea
+                                        value={answer}
+                                        onChange={(e) => {
+                                            const newAnswers = [...formData.answers];
+                                            newAnswers[index] = e.target.value;
+                                            setFormData({...formData, answers: newAnswers});
+                                        }}
+                                        placeholder="Type your answer here..."
+                                    />
+                                </div>
+                            ))}
+                        </div>
+
+                        <div className="form-group">
+                            <label>Additional Notes (Optional)</label>
+                            <textarea
+                                value={formData.notes}
+                                onChange={(e) => setFormData({...formData, notes: e.target.value})}
+                                placeholder="Any questions or comments about this worksheet?"
+                            />
+                        </div>
+
+                        <div className="form-group">
+                            <label>Attach Files (Optional)</label>
+                            <div 
+                                className="file-upload-area"
+                                onClick={() => document.getElementById('file-input').click()}
+                            >
+                                <p>📎 Click to upload files or drag and drop</p>
+                                <p style={{fontSize: '0.9rem', color: 'var(--text-muted)', marginTop: '0.5rem'}}>
+                                    Images, PDFs, documents
+                                </p>
+                            </div>
+                            <input 
+                                id="file-input"
+                                type="file" 
+                                multiple
+                                onChange={handleFileUpload}
+                                style={{display: 'none'}}
+                            />
+                            
+                            {formData.attachments.map((file, index) => (
+                                <div key={index} className="uploaded-file">
+                                    <span>📄 {file.name}</span>
+                                    <button type="button" onClick={() => removeFile(index)}>Remove</button>
+                                </div>
+                            ))}
+                        </div>
+
+                        <button type="submit" className="submit-btn">
+                            Submit Worksheet
+                        </button>
+                    </form>
+                </div>
+            );
+        }
+
+        function SubmissionHistory({ currentUser }) {
+            const [submissions, setSubmissions] = useState([]);
+
+            useEffect(() => {
+                const allSubmissions = JSON.parse(localStorage.getItem('submissions') || '[]');
+                const userSubmissions = allSubmissions.filter(
+                    sub => sub.studentEmail === currentUser.email
+                );
+                setSubmissions(userSubmissions);
+            }, [currentUser]);
+
+            return (
+                <div>
+                    <h2>Submission History</h2>
+                    {submissions.length === 0 ? (
+                        <p style={{color: 'var(--text-muted)', marginTop: '2rem'}}>
+                            No submissions yet. Submit your first worksheet to get started!
+                        </p>
+                    ) : (
+                        <div style={{marginTop: '2rem'}}>
+                            {submissions.map((sub, index) => (
+                                <div key={index} className="feature-card" style={{marginBottom: '1.5rem'}}>
+                                    <h3>{sub.subject} - {sub.topic}</h3>
+                                    <p style={{color: 'var(--text-muted)', marginBottom: '1rem'}}>
+                                        Submitted: {new Date(sub.submittedAt).toLocaleDateString()} at {new Date(sub.submittedAt).toLocaleTimeString()}
+                                    </p>
+                                    <p><strong>Status:</strong> Pending Review</p>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                </div>
+            );
+        }
+
+        function PaymentSection({ currentUser }) {
+            if (!ENABLE_PAYMENT) {
+                return (
+                    <div>
+                        <h2>Subscription</h2>
+                        <div className="payment-disabled">
+                            <h3>🎉 Currently Free!</h3>
+                            <p style={{marginTop: '1rem', fontSize: '1.1rem'}}>
+                                All features are completely free during our launch period. 
+                                Enjoy unlimited access to worksheets, feedback, and learning materials!
+                            </p>
+                            <p style={{marginTop: '1rem', color: 'var(--text-muted)'}}>
+                                Regular price will be ${MONTHLY_PRICE}/month when subscription becomes active.
+                            </p>
+                        </div>
+                    </div>
+                );
+            }
+
+            return (
+                <div>
+                    <h2>Subscription</h2>
+                    <div className="payment-container">
+                        <div className="price-display">
+                            <h3>${MONTHLY_PRICE}</h3>
+                            <p>per month</p>
+                        </div>
+
+                        <div className="form-group">
+                            <label>Cardholder Name</label>
+                            <input type="text" placeholder="John Doe" />
+                        </div>
+
+                        <div className="form-group">
+                            <label>Card Number</label>
+                            <input type="text" placeholder="1234 5678 9012 3456" />
+                        </div>
+
+                        <div style={{display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem'}}>
+                            <div className="form-group">
+                                <label>Expiry Date</label>
+                                <input type="text" placeholder="MM/YY" />
+                            </div>
+                            <div className="form-group">
+                                <label>CVV</label>
+                                <input type="text" placeholder="123" />
+                            </div>
+                        </div>
+
+                        <button className="submit-btn">
+                            Subscribe Now - ${MONTHLY_PRICE}/month
+                        </button>
+
+                        <p style={{textAlign: 'center', marginTop: '1rem', color: 'var(--text-muted)', fontSize: '0.9rem'}}>
+                            Secure payment processing. Cancel anytime.
+                        </p>
+                    </div>
+                </div>
+            );
+        }
+
+        function AboutPage() {
+            return (
+                <div className="main-content">
+                    <div className="page-header">
+                        <h2>About Me</h2>
+                    </div>
+
+                    <div className="content-section">
+                        <p>
+                            Welcome! I'm a dedicated educator with over [X] years of experience helping students 
+                            in grades 5-10 achieve their academic goals. My passion is making learning accessible, 
+                            engaging, and effective for every student.
+                        </p>
+
+                        <h3>My Teaching Philosophy</h3>
+                        <p>
+                            I believe every student has unique strengths and learning styles. My approach focuses on:
+                        </p>
+                        <ul>
+                            <li>Building confidence through personalized attention</li>
+                            <li>Making complex concepts simple and relatable</li>
+                            <li>Encouraging critical thinking and problem-solving skills</li>
+                            <li>Creating a supportive, judgment-free learning environment</li>
+                        </ul>
+
+                        <h3>Qualifications & Experience</h3>
+                        <p>
+                            [Add your qualifications, certifications, degrees, and teaching experience here. 
+                            For example: Bachelor's in Education, Certified Teacher, 10+ years of tutoring experience, etc.]
+                        </p>
+
+                        <h3>Subjects I Teach</h3>
+                        <ul>
+                            <li>Mathematics (Arithmetic, Pre-Algebra, Algebra, Geometry)</li>
+                            <li>Science (General Science, Biology, Chemistry, Physics basics)</li>
+                            <li>English Language Arts (Reading, Writing, Grammar, Literature)</li>
+                            <li>Social Studies (History, Geography, Civics)</li>
+                        </ul>
+
+                        <h3>Why Choose My Tutoring?</h3>
+                        <p>
+                            My students don't just improve their grades—they develop a genuine understanding 
+                            and appreciation for learning. I take pride in seeing students gain confidence 
+                            and become independent learners who are excited about their education.
+                        </p>
+                    </div>
+                </div>
+            );
+        }
+
+        function LearnMorePage() {
+            return (
+                <div className="main-content">
+                    <div className="page-header">
+                        <h2>Learn More</h2>
+                        <p>Discover how our tutoring platform works and what makes it special</p>
+                    </div>
+
+                    <div className="content-section">
+                        <h3>How It Works</h3>
+                        <p>
+                            Our online tutoring platform is designed to be simple and effective:
+                        </p>
+                        <ul>
+                            <li><strong>Step 1:</strong> Create your student account (currently free!)</li>
+                            <li><strong>Step 2:</strong> Access worksheets and learning materials</li>
+                            <li><strong>Step 3:</strong> Complete assignments at your own pace</li>
+                            <li><strong>Step 4:</strong> Submit your work online</li>
+                            <li><strong>Step 5:</strong> Receive detailed feedback via email</li>
+                        </ul>
+
+                        <h3>What Students Get</h3>
+                        <ul>
+                            <li>Personalized worksheet assignments tailored to your grade level</li>
+                            <li>Online submission system - no more lost papers!</li>
+                            <li>Detailed feedback on all submitted work</li>
+                            <li>Track your progress and improvement over time</li>
+                            <li>Access to learning resources 24/7</li>
+                            <li>Email support for questions between sessions</li>
+                        </ul>
+
+                        <h3>Current Pricing</h3>
+                        <p>
+                            We're currently offering <strong>completely free access</strong> to all features 
+                            during our launch period. This includes:
+                        </p>
+                        <ul>
+                            <li>Unlimited worksheet submissions</li>
+                            <li>Full access to all grade-level materials</li>
+                            <li>Personalized feedback on all work</li>
+                            <li>Progress tracking and reports</li>
+                        </ul>
+                        <p>
+                            When subscription becomes active, the monthly rate will be ${MONTHLY_PRICE} per student. 
+                            Current members will receive advance notice before any changes.
+                        </p>
+
+                        <h3>Perfect For</h3>
+                        <ul>
+                            <li>Students who need extra help with challenging subjects</li>
+                            <li>Those preparing for exams and tests</li>
+                            <li>Students who want to get ahead</li>
+                            <li>Homeschool students needing structured support</li>
+                            <li>Anyone looking to build stronger study habits</li>
+                        </ul>
+
+                        <h3>Parent Communication</h3>
+                        <p>
+                            Parents receive regular updates about their child's progress. We maintain open 
+                            communication to ensure everyone is on the same page regarding learning goals 
+                            and achievements.
+                        </p>
+                    </div>
+                </div>
+            );
+        }
+
+        function ContactPage() {
+            const [formData, setFormData] = useState({
+                name: '',
+                email: '',
+                subject: '',
+                message: ''
+            });
+            const [submitted, setSubmitted] = useState(false);
+
+            const handleSubmit = (e) => {
+                e.preventDefault();
+                
+                // In production, this would send an email
+                console.log('Contact form submitted:', formData);
+                
+                setSubmitted(true);
+                setTimeout(() => {
+                    setSubmitted(false);
+                    setFormData({ name: '', email: '', subject: '', message: '' });
+                }, 3000);
+            };
+
+            return (
+                <div className="main-content">
+                    <div className="page-header">
+                        <h2>Contact Me</h2>
+                        <p>Have questions? I'd love to hear from you!</p>
+                    </div>
+
+                    <div className="auth-container">
+                        {submitted && (
+                            <div className="success-message">
+                                ✓ Message sent! I'll get back to you within 24 hours.
+                            </div>
+                        )}
+
+                        <form onSubmit={handleSubmit}>
+                            <div className="form-group">
+                                <label>Your Name</label>
+                                <input 
+                                    type="text" 
+                                    required
+                                    value={formData.name}
+                                    onChange={(e) => setFormData({...formData, name: e.target.value})}
+                                />
+                            </div>
+
+                            <div className="form-group">
+                                <label>Email Address</label>
+                                <input 
+                                    type="email" 
+                                    required
+                                    value={formData.email}
+                                    onChange={(e) => setFormData({...formData, email: e.target.value})}
+                                />
+                            </div>
+
+                            <div className="form-group">
+                                <label>Subject</label>
+                                <input 
+                                    type="text" 
+                                    required
+                                    value={formData.subject}
+                                    onChange={(e) => setFormData({...formData, subject: e.target.value})}
+                                    placeholder="What's this about?"
+                                />
+                            </div>
+
+                            <div className="form-group">
+                                <label>Message</label>
+                                <textarea
+                                    required
+                                    value={formData.message}
+                                    onChange={(e) => setFormData({...formData, message: e.target.value})}
+                                    placeholder="Tell me what you'd like to know..."
+                                />
+                            </div>
+
+                            <button type="submit" className="submit-btn">
+                                Send Message
+                            </button>
+                        </form>
+
+                        <div style={{marginTop: '2rem', textAlign: 'center', color: 'var(--text-muted)'}}>
+                            <p>You can also reach me directly at:</p>
+                            <p style={{marginTop: '0.5rem', color: 'var(--primary)', fontWeight: '600'}}>
+                                {TUTOR_EMAIL}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        function Footer() {
+            return (
+                <footer>
+                    <div className="footer-content">
+                        <p>© {new Date().getFullYear()} Academic Excellence Tutoring. All rights reserved.</p>
+                        <p style={{fontSize: '0.9rem', marginTop: '0.5rem'}}>
+                            Empowering students to achieve their full potential
+                        </p>
+                    </div>
+                </footer>
+            );
+        }
+
+        ReactDOM.render(<App />, document.getElementById('root'));
+    </script>
+</body>
+</html>
