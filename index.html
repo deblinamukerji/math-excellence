@@ -701,6 +701,8 @@
                         />
                     ) : currentPage === 'home' ? (
                         <HomePage setShowAuth={setShowAuth} setCurrentPage={setCurrentPage} />
+                    ) : currentPage === 'worksheets' ? (
+                        <WorksheetsPage />
                     ) : currentPage === 'about' ? (
                         <AboutPage />
                     ) : currentPage === 'learn' ? (
@@ -725,6 +727,7 @@
                                     <button onClick={() => setCurrentPage('home')}>Home</button>
                                     <button onClick={() => setCurrentPage('about')}>About Me</button>
                                     <button onClick={() => setCurrentPage('learn')}>Learn More</button>
+                                    <button onClick={() => setCurrentPage('worksheets')}>Worksheets</button>
                                     <button onClick={() => setCurrentPage('contact')}>Contact</button>
                                     <button className="btn-primary" onClick={() => setShowAuth(true)}>
                                         Student Login
@@ -1266,6 +1269,113 @@
                         <p style={{textAlign: 'center', marginTop: '1rem', color: 'var(--text-muted)', fontSize: '0.9rem'}}>
                             Secure payment processing. Cancel anytime.
                         </p>
+                    </div>
+                </div>
+            );
+        }
+
+        function WorksheetsPage() {
+            const [selectedGrade, setSelectedGrade] = useState(null);
+
+            const grades = [
+                { id: 'grade3', name: 'Grade 3', icon: '📐' },
+                { id: 'grade4', name: 'Grade 4', icon: '➕' },
+                { id: 'grade5', name: 'Grade 5', icon: '✖️' },
+                { id: 'grade6', name: 'Grade 6', icon: '➗' },
+                { id: 'grade7', name: 'Grade 7', icon: '📊' },
+                { id: 'grade8', name: 'Grade 8', icon: '📈' },
+                { id: 'grade9', name: 'Grade 9', icon: '🔢' },
+                { id: 'calculus', name: 'Calculus', icon: '∫' }
+            ];
+
+            if (selectedGrade) {
+                return <GradeWorksheets grade={selectedGrade} onBack={() => setSelectedGrade(null)} />;
+            }
+
+            return (
+                <div className="main-content">
+                    <div className="page-header">
+                        <h2>Math Worksheets by Grade</h2>
+                        <p>Select your grade level to access practice worksheets</p>
+                    </div>
+
+                    <div className="features-grid">
+                        {grades.map(grade => (
+                            <div 
+                                key={grade.id}
+                                className="feature-card"
+                                style={{cursor: 'pointer'}}
+                                onClick={() => setSelectedGrade(grade)}
+                            >
+                                <div className="feature-icon" style={{fontSize: '2rem'}}>
+                                    {grade.icon}
+                                </div>
+                                <h3>{grade.name}</h3>
+                                <p>Practice worksheets and exercises for {grade.name} mathematics</p>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            );
+        }
+
+        function GradeWorksheets({ grade, onBack }) {
+            // Placeholder worksheets - these will be replaced with actual uploaded worksheets
+            const worksheets = [
+                { id: 1, title: 'Worksheet 1', description: 'Coming soon' },
+                { id: 2, title: 'Worksheet 2', description: 'Coming soon' },
+                { id: 3, title: 'Worksheet 3', description: 'Coming soon' },
+                { id: 4, title: 'Worksheet 4', description: 'Coming soon' },
+                { id: 5, title: 'Worksheet 5', description: 'Coming soon' },
+                { id: 6, title: 'Worksheet 6', description: 'Coming soon' },
+                { id: 7, title: 'Worksheet 7', description: 'Coming soon' },
+                { id: 8, title: 'Worksheet 8', description: 'Coming soon' },
+                { id: 9, title: 'Worksheet 9', description: 'Coming soon' },
+                { id: 10, title: 'Worksheet 10', description: 'Coming soon' }
+            ];
+
+            return (
+                <div className="main-content">
+                    <button 
+                        onClick={onBack}
+                        style={{
+                            background: 'var(--primary)',
+                            color: 'white',
+                            border: 'none',
+                            padding: '0.75rem 1.5rem',
+                            borderRadius: '6px',
+                            cursor: 'pointer',
+                            marginBottom: '2rem',
+                            fontSize: '1rem',
+                            fontWeight: '600',
+                            transition: 'all 0.3s ease'
+                        }}
+                        onMouseOver={(e) => e.target.style.background = '#2a5d3e'}
+                        onMouseOut={(e) => e.target.style.background = 'var(--primary)'}
+                    >
+                        ← Back to Grade Selection
+                    </button>
+
+                    <div className="page-header">
+                        <h2>{grade.name} Worksheets</h2>
+                        <p>Practice problems and exercises for {grade.name} mathematics</p>
+                    </div>
+
+                    <div className="features-grid">
+                        {worksheets.map(worksheet => (
+                            <div key={worksheet.id} className="feature-card">
+                                <div className="feature-icon">📄</div>
+                                <h3>{worksheet.title}</h3>
+                                <p>{worksheet.description}</p>
+                                <button 
+                                    className="submit-btn"
+                                    style={{marginTop: '1rem', padding: '0.75rem'}}
+                                    disabled
+                                >
+                                    Download PDF
+                                </button>
+                            </div>
+                        ))}
                     </div>
                 </div>
             );
