@@ -656,7 +656,7 @@
             const [currentUser, setCurrentUser] = useState(null);
             const [showAuth, setShowAuth] = useState(false);
             const [authMode, setAuthMode] = useState('login');
-            const [dashboardView, setDashboardView] = useState('worksheets');
+            const [dashboardView, setDashboardView] = useState('myworksheets');
 
             // Check if user is logged in on mount
             useEffect(() => {
@@ -937,11 +937,22 @@
                 <div className="dashboard">
                     <aside className="sidebar">
                         <h3>Dashboard</h3>
+                        <p style={{fontSize: '0.9rem', color: 'var(--text-muted)', marginBottom: '1rem'}}>
+                            Grade {currentUser.grade}
+                        </p>
                         <ul className="sidebar-menu">
                             <li>
                                 <button 
-                                    className={dashboardView === 'worksheets' ? 'active' : ''}
-                                    onClick={() => setDashboardView('worksheets')}
+                                    className={dashboardView === 'myworksheets' ? 'active' : ''}
+                                    onClick={() => setDashboardView('myworksheets')}
+                                >
+                                    My Worksheets
+                                </button>
+                            </li>
+                            <li>
+                                <button 
+                                    className={dashboardView === 'submit' ? 'active' : ''}
+                                    onClick={() => setDashboardView('submit')}
                                 >
                                     Submit Worksheet
                                 </button>
@@ -966,7 +977,10 @@
                     </aside>
 
                     <main className="dashboard-content">
-                        {dashboardView === 'worksheets' && (
+                        {dashboardView === 'myworksheets' && (
+                            <MyWorksheets currentUser={currentUser} />
+                        )}
+                        {dashboardView === 'submit' && (
                             <WorksheetSubmission currentUser={currentUser} />
                         )}
                         {dashboardView === 'history' && (
@@ -976,6 +990,109 @@
                             <PaymentSection currentUser={currentUser} />
                         )}
                     </main>
+                </div>
+            );
+        }
+
+        function MyWorksheets({ currentUser }) {
+            // Worksheet data structure - organized by grade
+            // You'll replace these placeholders with actual worksheet files
+            const worksheetsByGrade = {
+                '5': [
+                    { id: 1, title: 'Grade 5 Worksheet 1', description: 'Fractions and Decimals', pdfUrl: null },
+                    { id: 2, title: 'Grade 5 Worksheet 2', description: 'Word Problems', pdfUrl: null }
+                ],
+                '6': [
+                    { id: 1, title: 'Grade 6 Worksheet 1', description: 'Ratios and Proportions', pdfUrl: null },
+                    { id: 2, title: 'Grade 6 Worksheet 2', description: 'Integer Operations', pdfUrl: null }
+                ],
+                '7': [
+                    { id: 1, title: 'Grade 7 Worksheet 1', description: 'Algebraic Expressions', pdfUrl: null },
+                    { id: 2, title: 'Grade 7 Worksheet 2', description: 'Geometry Basics', pdfUrl: null }
+                ],
+                '8': [
+                    { id: 1, title: 'Grade 8 Worksheet 1', description: 'Linear Equations', pdfUrl: null },
+                    { id: 2, title: 'Grade 8 Worksheet 2', description: 'Pythagorean Theorem', pdfUrl: null }
+                ],
+                '9': [
+                    { id: 1, title: 'Grade 9 Worksheet 1', description: 'Quadratic Functions', pdfUrl: null },
+                    { id: 2, title: 'Grade 9 Worksheet 2', description: 'Systems of Equations', pdfUrl: null }
+                ],
+                '10': [
+                    { id: 1, title: 'Grade 10 Worksheet 1', description: 'Trigonometry', pdfUrl: null },
+                    { id: 2, title: 'Grade 10 Worksheet 2', description: 'Polynomials', pdfUrl: null }
+                ]
+            };
+
+            // Get worksheets for current user's grade
+            const myWorksheets = worksheetsByGrade[currentUser.grade] || [];
+
+            const handleDownload = (worksheet) => {
+                if (worksheet.pdfUrl) {
+                    // In production, this would download the actual PDF
+                    window.open(worksheet.pdfUrl, '_blank');
+                } else {
+                    alert('This worksheet will be available soon. Check back later!');
+                }
+            };
+
+            return (
+                <div>
+                    <h2>My Grade {currentUser.grade} Worksheets</h2>
+                    <p style={{color: 'var(--text-muted)', marginBottom: '2rem'}}>
+                        Download and complete these worksheets, then submit them using the "Submit Worksheet" section.
+                    </p>
+
+                    {myWorksheets.length === 0 ? (
+                        <div style={{
+                            background: 'var(--bg-light)', 
+                            padding: '3rem', 
+                            borderRadius: '12px',
+                            textAlign: 'center',
+                            color: 'var(--text-muted)'
+                        }}>
+                            <h3 style={{color: 'var(--primary)', marginBottom: '1rem'}}>
+                                Worksheets Coming Soon!
+                            </h3>
+                            <p>Grade {currentUser.grade} worksheets will be available shortly. Check back soon!</p>
+                        </div>
+                    ) : (
+                        <div className="features-grid" style={{gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))'}}>
+                            {myWorksheets.map(worksheet => (
+                                <div key={worksheet.id} className="feature-card">
+                                    <div className="feature-icon">📄</div>
+                                    <h3>{worksheet.title}</h3>
+                                    <p style={{color: 'var(--text-muted)', marginBottom: '1rem'}}>
+                                        {worksheet.description}
+                                    </p>
+                                    <button 
+                                        className="submit-btn"
+                                        style={{padding: '0.75rem 1.5rem'}}
+                                        onClick={() => handleDownload(worksheet)}
+                                    >
+                                        {worksheet.pdfUrl ? '📥 Download PDF' : '⏳ Coming Soon'}
+                                    </button>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+
+                    <div style={{
+                        marginTop: '3rem',
+                        padding: '1.5rem',
+                        background: '#e8f5e9',
+                        borderRadius: '8px',
+                        border: '1px solid #4caf50'
+                    }}>
+                        <h3 style={{color: 'var(--primary)', marginBottom: '0.5rem'}}>📚 How to Use Worksheets</h3>
+                        <ol style={{marginLeft: '1.5rem', lineHeight: '1.8'}}>
+                            <li>Download the worksheet PDF by clicking the button above</li>
+                            <li>Print it out or work on it digitally</li>
+                            <li>Complete all the problems</li>
+                            <li>Go to "Submit Worksheet" to upload your completed work</li>
+                            <li>Receive feedback from your tutor via email</li>
+                        </ol>
+                    </div>
                 </div>
             );
         }
